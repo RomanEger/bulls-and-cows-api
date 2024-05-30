@@ -154,11 +154,6 @@ public class Game {
     public Tuple<Integer, Integer> getBullsAndCows(int[] arrBulls, int[] attempt){
         int countBulls = 0;
         int countCows = 0;
-//        HashMap<Integer, Integer> attemptMap = new HashMap<>();
-//
-//        for(int i = 0; i < attempt.length; i++){
-//            attemptMap.put(i, attempt[i]);
-//        }
 
         HashMap<Integer, Integer> bullsMap = new HashMap<>();
 

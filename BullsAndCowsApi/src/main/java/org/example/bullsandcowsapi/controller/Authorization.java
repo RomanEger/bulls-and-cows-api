@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class Authorization {
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public BaseResponse Registration(@RequestBody AuthorizationRequestDto user){
 
         return new BaseResponse("OK", null);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public BaseResponse Login(@RequestBody AuthorizationRequestDto user){
         /*
         //query to db

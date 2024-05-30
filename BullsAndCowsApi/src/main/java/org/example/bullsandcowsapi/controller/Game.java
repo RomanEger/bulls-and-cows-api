@@ -27,7 +27,7 @@ public class Game {
         this.gameMap = gameMap;
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
     public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
         var gameSession = UUID.randomUUID();
         gameMap.put(gameSession, null);
@@ -36,7 +36,7 @@ public class Game {
         return new GameResponse("OK", null, gameSession);
     }
 
-    @GetMapping("{id}/status")
+    @GetMapping("/{id}/status")
     public BaseResponse Status(@PathVariable UUID id){
         var gameStatus = gameMap.get(id);
         if(gameStatus == null)
@@ -45,7 +45,7 @@ public class Game {
         return new GameStatusReponse("IN_PROGRESS", null, gameStatus);
     }
 
-    @PostMapping("{id}/attempt")
+    @PostMapping("/{id}/attempt")
     public BaseResponse Attempt(@PathVariable UUID id, @RequestBody int number){
         var gameStatus = gameMap.get(id);
         if(gameStatus == null)
