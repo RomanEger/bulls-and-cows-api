@@ -6,6 +6,7 @@ import org.example.bullsandcowsapi.reponse.GameResponse;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
 import org.example.bullsandcowsapi.reponse.GameStatusReponse;
 import org.example.bullsandcowsapi.request.CreateGameRequestDto;
+import org.example.bullsandcowsapi.service.IntToIntArrayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,8 @@ public class Game {
 
     private HashMap<UUID, List<Attempt>> gameMap;
 
+    private int[] arrBulls;
+
     @Autowired
     public Game(HashMap<UUID, List<Attempt>> gameMap){
         this.gameMap = gameMap;
@@ -26,10 +29,9 @@ public class Game {
 
     @PostMapping("create")
     public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
-
         var gameSession = UUID.randomUUID();
-
         gameMap.put(gameSession, null);
+        arrBulls = IntToIntArrayService.toIntArray(createGameRequestDto.number);
 
         return new GameResponse("OK", null, gameSession);
     }
@@ -48,7 +50,7 @@ public class Game {
         var gameStatus = gameMap.get(id);
         if(gameStatus == null)
             return new BaseResponse("FAIL", "Игра не найдена");
-        var bullsAndCows = new org.example.Game().getBullsAndCows(gameStatus.get());
+        var bullsAndCows = new org.example.Game().getBullsAndCows(arrBulls, IntToIntArrayService.toIntArray(number));
         var bulls = bullsAndCows.getFirst();
         var cows = bullsAndCows.getSecond();
         return new AttemptResponse("OK", null, bulls, cows);
