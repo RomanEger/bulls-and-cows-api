@@ -2,6 +2,7 @@ package org.example.bullsandcowsapi.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.apache.commons.lang3.NotImplementedException;
 import org.example.bullsandcowsapi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,12 @@ public class UserRepository implements UserCrudRepository {
     }
 
     @Override
-    public Optional<User> findByPersonalData(User user) {
-        return (Optional<User>) em.createQuery("select top 1 * from userTable where login='"+user.login+"' and password='"+user.password+"'").getSingleResult();
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        String SQL = "select * from userTable u where u.login = ?1 and u.password = ?2";
+        Query query = em.createNativeQuery(SQL);
+        query.setParameter(1, login);
+        query.setParameter(2, password);
+        return (Optional<User>) query.getSingleResult();
     }
 
     @Override

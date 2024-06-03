@@ -11,5 +11,5 @@ public interface UserCrudRepository extends CrudRepository<User, UUID> {
 
     boolean existsByLogin(String login);
 
-    Optional<User> findByPersonalData(User user);
+    Optional<User> findByLoginAndPassword(String login, String password);
 }
