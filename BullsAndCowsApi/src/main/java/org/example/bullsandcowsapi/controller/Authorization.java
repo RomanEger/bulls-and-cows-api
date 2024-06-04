@@ -1,6 +1,7 @@
 package org.example.bullsandcowsapi.controller;
 import org.example.bullsandcowsapi.entity.User;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
+import org.example.bullsandcowsapi.reponse.LoginResponse;
 import org.example.bullsandcowsapi.repository.UserCrudRepository;
 import org.example.bullsandcowsapi.request.AuthorizationRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,8 @@ public class Authorization {
     @PostMapping("/login")
     public BaseResponse Login(@RequestBody AuthorizationRequestDto user){
         try{
-            repository.findByLoginAndPassword(user.login(), user.password());
-            return new BaseResponse("OK", null);
+            var response = repository.findByLoginAndPassword(user.login(), user.password());
+            return new LoginResponse("OK", null, response.id);
         }
         catch (Exception ex){
             return new BaseResponse("FAIL", ex.getMessage());

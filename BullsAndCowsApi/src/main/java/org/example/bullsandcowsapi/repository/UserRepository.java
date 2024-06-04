@@ -61,11 +61,11 @@ public class UserRepository implements UserCrudRepository {
 
     @Override
     public User findByLoginAndPassword(String login, String password) {
-        String SQL = "select u from users u where u.login = ?1 and u.password = ?2";
-        var query = em.createQuery(SQL, User.class);
+        String SQL = "select * from users u where u.login = ?1 and u.password = ?2";
+        var query = em.createNativeQuery(SQL, User.class);
         query.setParameter(1, login);
         query.setParameter(2, password);
-        return query.getSingleResult();
+        return (User) query.getSingleResult();
     }
 
     @Override
