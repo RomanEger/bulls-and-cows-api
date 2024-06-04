@@ -1,14 +1,18 @@
 package org.example.bullsandcowsapi.entity;
 
 import jakarta.persistence.*;
+
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
-public class User{
+public class Attempt {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public UUID id;
-    public String login;
-    public String password;
+
+    public int number;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gameId")
+    public Game game;
 }
