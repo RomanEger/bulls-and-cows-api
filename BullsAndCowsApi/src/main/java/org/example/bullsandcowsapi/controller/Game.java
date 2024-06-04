@@ -60,12 +60,17 @@ public class Game {
 
     @PostMapping("/{id}/attempt")
     public BaseResponse Attempt(@PathVariable UUID id, @RequestBody int number){
-        var gameStatus = gameMap.get(id);
-        if(gameStatus == null)
-            return new BaseResponse("FAIL", "Игра не найдена");
-        var bullsAndCows = new org.example.Game().getBullsAndCows(arrBulls, IntToIntArrayService.toIntArray(number));
-        var bulls = bullsAndCows.getFirst();
-        var cows = bullsAndCows.getSecond();
-        return new AttemptResponse("OK", null, bulls, cows);
+        try{
+            var attempt = new org.example.bullsandcowsapi.entity.Attempt();
+            var game = new org.example.Game();
+            var arrAttempt = IntToIntArrayService.toIntArray(number);
+            var arrBulls = IntToIntArrayService.toIntArray(repository.findById(id).number);
+            var tuple = game.getBullsAndCows(arrBulls, arrAttempt);
+            repository.addAttempt(attempt);
+            return new AttemptResponse("OK", null, tuple.getFirst(), tuple.getSecond());
+        }
+        catch (Exception ex){
+            return new BaseResponse("FAIL", ex.getMessage());
+        }
     }
 }
