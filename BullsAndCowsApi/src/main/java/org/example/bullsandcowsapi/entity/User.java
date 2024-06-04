@@ -6,7 +6,7 @@ import org.hibernate.annotations.Check;
 import java.util.UUID;
 
 @Entity
-@Table(name = "userTable")
+@Table(name = "users")
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

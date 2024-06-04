@@ -2,15 +2,13 @@ package org.example.bullsandcowsapi.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import org.apache.commons.lang3.NotImplementedException;
+import jakarta.transaction.Transactional;
 import org.example.bullsandcowsapi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -24,67 +22,78 @@ public class UserRepository implements UserCrudRepository {
         this.em = em;
     }
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
     @Override
-    public <S extends User> S save(S entity) {
-        if(existsById(entity.id))
-            return null;
-        else
-            return (S)em.createQuery("insert into user(login, password) values('"+entity.login+"', '"+entity.password+"');"+
-                    "select * from userTable where login='"+entity.login+"';").getSingleResult();
+    public void update(User entity){
+        var sql = "";
+        var query = em.createNativeQuery(sql);
+        query.setParameter(1, entity.id);
+        query.setParameter(2, entity.login);
+        query.setParameter(3, entity.password);
+
+        em.persist(query);
+    }
+
+    @Transactional
+    @Override
+    public void create(User entity) {
+        var SqlInsert = "insert into users (id, login, password) values(?1, ?2, ?3);";
+        var queryInsert = em.createNativeQuery(SqlInsert);
+        queryInsert.setParameter(1, entity.id);
+        queryInsert.setParameter(2, entity.login);
+        queryInsert.setParameter(3, entity.password);
+
+        em.persist(entity);
     }
 
     @Override
-    public Optional<User> findByLogin(String login) {
-        return (Optional<User>) em.createQuery("select top 1 * from userTable where login='?1'").getSingleResult();
+    public User findByLogin(String login) {
+        var typedQuery = em.createQuery("select u from user u where u.login = ?1", User.class);
+        typedQuery.setParameter(1, login);
+        return typedQuery.getSingleResult();
     }
 
     @Override
     public boolean existsByLogin(String login) {
-        return !Objects.equals(findByLogin(login), Optional.empty());
+        return findByLogin(login) != null;
     }
 
     @Override
-    public Optional<User> findByLoginAndPassword(String login, String password) {
-        String SQL = "select * from userTable u where u.login = ?1 and u.password = ?2";
-        Query query = em.createNativeQuery(SQL);
+    public User findByLoginAndPassword(String login, String password) {
+        String SQL = "select u from users u where u.login = ?1 and u.password = ?2";
+        var query = em.createQuery(SQL, User.class);
         query.setParameter(1, login);
         query.setParameter(2, password);
-        return (Optional<User>) query.getSingleResult();
+        return query.getSingleResult();
     }
 
     @Override
-    public <S extends User> Iterable<S> saveAll(Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public Optional<User> findById(UUID uuid) {
-        return (Optional<org.example.bullsandcowsapi.entity.User>) em.createQuery("select top 1 * from userTable where id=?1").getSingleResult();
+    public User findById(UUID uuid) {
+        var query =  em.createQuery("select u from users u where id=?1", User.class);
+        query.setParameter(1, uuid);
+        return query.getSingleResult();
     }
 
     @Override
     public boolean existsById(UUID uuid) {
-        return !Objects.equals(findById(uuid), Optional.empty());
+        return findById(uuid) != null;
     }
 
     @Override
-    public Iterable<User> findAll() {
-        return em.createQuery("select * from userTable").getResultList();
-    }
-
-    @Override
-    public Iterable<User> findAllById(Iterable<UUID> uuids) {
-        throw new NotImplementedException();
+    public List<User> findAll() {
+        return em.createQuery("select u from users u", User.class).getResultList();
     }
 
     @Override
     public long count() {
-        return (long)em.createQuery("select count(*) from userTable").getSingleResult();
+        return (long)em.createNativeQuery("select count(*) from users").getSingleResult();
     }
 
-    @Override
     public void deleteById(UUID uuid) {
-        em.createQuery("delete from userTable where id=?1");
+        var query = em.createQuery("delete from users u where u.id = ?1");
+        query.setParameter(1, uuid);
+        query.executeUpdate();
     }
 
     @Override
@@ -92,22 +101,4 @@ public class UserRepository implements UserCrudRepository {
         deleteById(entity.id);
     }
 
-    @Override
-    public void deleteAllById(Iterable<? extends UUID> uuids) {
-        for(UUID id : uuids){
-            deleteById(id);
-        }
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends User> entities) {
-        for(org.example.bullsandcowsapi.entity.User user : entities){
-            deleteById(user.id);
-        }
-    }
-
-    @Override
-    public void deleteAll() {
-        em.createQuery("delete from userTable");
-    }
 }
