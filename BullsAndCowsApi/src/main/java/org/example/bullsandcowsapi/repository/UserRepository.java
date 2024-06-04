@@ -32,18 +32,12 @@ public class UserRepository implements UserCrudRepository {
         query.setParameter(2, entity.login);
         query.setParameter(3, entity.password);
 
-        em.persist(query);
+        query.executeUpdate();
     }
 
     @Transactional
     @Override
     public void create(User entity) {
-        var SqlInsert = "insert into users (id, login, password) values(?1, ?2, ?3);";
-        var queryInsert = em.createNativeQuery(SqlInsert);
-        queryInsert.setParameter(1, entity.id);
-        queryInsert.setParameter(2, entity.login);
-        queryInsert.setParameter(3, entity.password);
-
         em.persist(entity);
     }
 

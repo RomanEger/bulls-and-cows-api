@@ -14,7 +14,7 @@ public class Game {
 
     public int number;
 
-    public String status;
+    public String rule;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
     public List<Attempt> attemptList;

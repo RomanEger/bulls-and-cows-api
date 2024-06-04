@@ -5,44 +5,57 @@ import org.example.bullsandcowsapi.reponse.AttemptResponse;
 import org.example.bullsandcowsapi.reponse.GameResponse;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
 import org.example.bullsandcowsapi.reponse.GameStatusReponse;
+import org.example.bullsandcowsapi.repository.GameCrudRepository;
 import org.example.bullsandcowsapi.request.CreateGameRequestDto;
 import org.example.bullsandcowsapi.service.IntToIntArrayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
 public class Game {
 
-    private HashMap<UUID, List<Attempt>> gameMap;
+    private final GameCrudRepository repository;
 
     private int[] arrBulls;
 
     @Autowired
-    public Game(HashMap<UUID, List<Attempt>> gameMap){
-        this.gameMap = gameMap;
+    public Game(GameCrudRepository repository){
+        this.repository = repository;
     }
 
     @PostMapping("/create")
     public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
-        var gameSession = UUID.randomUUID();
-        gameMap.put(gameSession, null);
-        arrBulls = IntToIntArrayService.toIntArray(createGameRequestDto.number);
+        var game = new org.example.bullsandcowsapi.entity.Game();
+        game.number = createGameRequestDto.number;
+        game.id = UUID.randomUUID();
+        try{
+            repository.create(game);
+            var result = repository.findById(game.id);
 
-        return new GameResponse("OK", null, gameSession);
+            return new GameResponse("OK", null, result.id);
+        }
+        catch (Exception ex){
+            return new BaseResponse("FAIL", ex.getMessage());
+        }
     }
 
     @GetMapping("/{id}/status")
     public BaseResponse Status(@PathVariable UUID id){
-        var gameStatus = gameMap.get(id);
-        if(gameStatus == null)
+        try {
+            var attempts = repository.findAttemptsByGameId(id);
+            var resultAttempts = new ArrayList<Attempt>();
+            for(var a : attempts){
+                resultAttempts.add(new Attempt(a.number, a.bulls, a.cows));
+            }
+            return new GameStatusReponse("IN_PROGRESS", null, resultAttempts);
+        }
+        catch (Exception ex){
             return new BaseResponse("FAIL", "Игра не найдена");
-
-        return new GameStatusReponse("IN_PROGRESS", null, gameStatus);
+        }
     }
 
     @PostMapping("/{id}/attempt")
