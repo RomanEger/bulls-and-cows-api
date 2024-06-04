@@ -1,10 +1,7 @@
 package org.example.bullsandcowsapi.controller;
-
-import jakarta.persistence.NoResultException;
 import org.example.bullsandcowsapi.entity.User;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
 import org.example.bullsandcowsapi.repository.UserCrudRepository;
-import org.example.bullsandcowsapi.repository.UserRepository;
 import org.example.bullsandcowsapi.request.AuthorizationRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -35,24 +29,25 @@ public class Authorization {
         user.password = requestUser.password();
         try{
             repository.create(user);
-            repository.findAll();
+            return new BaseResponse("OK", null);
         }
         catch (Exception ex){
             var msg = ex.getMessage();
             System.out.println(msg);
             var stack = ex.getStackTrace();
             System.out.println(Arrays.toString(stack));
+            return new BaseResponse("FAIL", msg);
         }
-
-        return new BaseResponse("OK", null);
     }
 
     @PostMapping("/login")
     public BaseResponse Login(@RequestBody AuthorizationRequestDto user){
-        var result = repository.findByLoginAndPassword(user.login(), user.password());
-        if(Objects.equals(result, Optional.empty())){
-            return new BaseResponse("FAIL", "ошибка входа");
+        try{
+            repository.findByLoginAndPassword(user.login(), user.password());
+            return new BaseResponse("OK", null);
         }
-        return new BaseResponse("OK", null);
+        catch (Exception ex){
+            return new BaseResponse("FAIL", ex.getMessage());
+        }
     }
 }
