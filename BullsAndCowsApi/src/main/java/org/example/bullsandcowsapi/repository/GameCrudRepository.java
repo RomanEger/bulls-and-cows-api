@@ -2,7 +2,6 @@ package org.example.bullsandcowsapi.repository;
 
 import org.example.bullsandcowsapi.entity.Attempt;
 import org.example.bullsandcowsapi.entity.Game;
-import org.example.bullsandcowsapi.reponse.GameStatusReponse;
 
 import java.util.List;
 import java.util.UUID;

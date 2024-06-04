@@ -1,6 +1,7 @@
 package org.example.bullsandcowsapi.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.example.bullsandcowsapi.entity.Attempt;
 import org.example.bullsandcowsapi.entity.Game;
@@ -15,7 +16,8 @@ import java.util.UUID;
 @Repository
 public class GameRepository implements GameCrudRepository {
 
-    EntityManager em;
+    @PersistenceContext
+    private final EntityManager em;
 
     @Autowired
     public GameRepository(EntityManager em){

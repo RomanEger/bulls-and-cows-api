@@ -1,6 +1,7 @@
 package org.example.bullsandcowsapi.entity;
 
 import jakarta.persistence.*;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,6 @@ public class Game {
 
     public String rule;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "game", cascade = CascadeType.MERGE)
     public List<Attempt> attemptList;
 }

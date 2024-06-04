@@ -20,8 +20,6 @@ public class Game {
 
     private final GameCrudRepository repository;
 
-    private int[] arrBulls;
-
     @Autowired
     public Game(GameCrudRepository repository){
         this.repository = repository;
@@ -32,6 +30,7 @@ public class Game {
         var game = new org.example.bullsandcowsapi.entity.Game();
         game.number = createGameRequestDto.number;
         game.id = UUID.randomUUID();
+        game.rule = createGameRequestDto.gameRules;
         try{
             repository.create(game);
             var result = repository.findById(game.id);
