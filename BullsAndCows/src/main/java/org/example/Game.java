@@ -162,7 +162,7 @@ public class Game {
         }
 
         for (int i = 0; i < arrBulls.length; i++) {
-            if (attempt[i] == bullsMap.get(i)) {
+            if (bullsMap.containsKey(i) && attempt[i] == bullsMap.get(i)) {
                 countBulls++;
                 bullsMap.remove(i);
             }

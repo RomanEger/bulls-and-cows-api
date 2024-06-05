@@ -1,6 +1,7 @@
 package org.example.bullsandcowsapi.controller;
 
 import org.example.bullsandcowsapi.Attempt;
+import org.example.bullsandcowsapi.dto.AttemptDto;
 import org.example.bullsandcowsapi.reponse.AttemptResponse;
 import org.example.bullsandcowsapi.reponse.GameResponse;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,13 +31,13 @@ public class Game {
     public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
         var game = new org.example.bullsandcowsapi.entity.Game();
         game.number = createGameRequestDto.number;
-        game.id = UUID.randomUUID();
         game.rule = createGameRequestDto.gameRules;
+        game.session = UUID.randomUUID();
         try{
             repository.create(game);
-            var result = repository.findById(game.id);
+            var result = repository.findById(game.session);
 
-            return new GameResponse("OK", null, result.id);
+            return new GameResponse("OK", null, result.session);
         }
         catch (Exception ex){
             return new BaseResponse("FAIL", ex.getMessage());
@@ -45,12 +47,8 @@ public class Game {
     @GetMapping("/{id}/status")
     public BaseResponse Status(@PathVariable UUID id){
         try {
-            var attempts = repository.findAttemptsByGameId(id);
-            var resultAttempts = new ArrayList<Attempt>();
-            for(var a : attempts){
-                resultAttempts.add(new Attempt(a.number, a.bulls, a.cows));
-            }
-            return new GameStatusReponse("IN_PROGRESS", null, resultAttempts);
+            List<AttemptDto> attempts = repository.findAttemptsByGameId(id);
+            return new GameStatusReponse("IN_PROGRESS", null, attempts);
         }
         catch (Exception ex){
             return new BaseResponse("FAIL", "Игра не найдена");
@@ -65,6 +63,12 @@ public class Game {
             var arrAttempt = IntToIntArrayService.toIntArray(number);
             var arrBulls = IntToIntArrayService.toIntArray(repository.findById(id).number);
             var tuple = game.getBullsAndCows(arrBulls, arrAttempt);
+            var gameObj = repository.findById(id);
+            attempt.number = number;
+            attempt.bulls = tuple.getFirst();
+            attempt.cows = tuple.getSecond();
+            attempt.gameId = gameObj.id;
+
             repository.addAttempt(attempt);
             return new AttemptResponse("OK", null, tuple.getFirst(), tuple.getSecond());
         }

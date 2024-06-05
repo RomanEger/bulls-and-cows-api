@@ -11,12 +11,11 @@ import java.util.UUID;
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public UUID id;
+    public int id;
 
     public int number;
 
     public String rule;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "game", cascade = CascadeType.MERGE)
-    public List<Attempt> attemptList;
+    public UUID session;
 }

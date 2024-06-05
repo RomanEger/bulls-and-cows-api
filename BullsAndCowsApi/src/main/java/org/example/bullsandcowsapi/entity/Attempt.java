@@ -17,7 +17,5 @@ public class Attempt {
 
     public int cows;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId")
-    public Game game;
+    public int gameId;
 }

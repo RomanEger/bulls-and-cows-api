@@ -1,4 +1,5 @@
 package org.example.bullsandcowsapi.dto;
 
-public record GameDto() {
-}
+import java.util.UUID;
+
+public record GameDto(int id, int number, byte[] session, String rule) {}
