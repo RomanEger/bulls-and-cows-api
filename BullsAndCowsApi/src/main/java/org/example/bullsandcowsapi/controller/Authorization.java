@@ -1,4 +1,6 @@
 package org.example.bullsandcowsapi.controller;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.bullsandcowsapi.entity.User;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
 import org.example.bullsandcowsapi.reponse.LoginResponse;
@@ -42,10 +44,18 @@ public class Authorization {
     }
 
     @PostMapping("/login")
-    public BaseResponse Login(@RequestBody AuthorizationRequestDto user){
+    public BaseResponse Login(HttpServletResponse response, @RequestBody AuthorizationRequestDto user){
         try{
-            var response = repository.findByLoginAndPassword(user.login(), user.password());
-            return new LoginResponse("OK", null, response.id);
+            var findUser = repository.findByLoginAndPassword(user.login(), user.password());
+
+            var cookie = new Cookie("userId", findUser.id.toString());
+            cookie.setPath("/");
+            cookie.setMaxAge(3600);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+            response.setContentType("text/plain");
+
+            return new LoginResponse("OK", null, findUser.id);
         }
         catch (Exception ex){
             return new BaseResponse("FAIL", ex.getMessage());

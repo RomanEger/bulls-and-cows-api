@@ -53,12 +53,6 @@ public class Game {
             gameRepository.create(game);
             var result = gameRepository.findById(game.session);
 
-            var cookie = new Cookie("userId", game.userSession.toString());
-            cookie.setPath("/");
-            cookie.setMaxAge(3600);
-            response.addCookie(cookie);
-            response.setContentType("text/plain");
-
             return new GameResponse("OK", null, result.session);
         }
         catch (Exception ex){

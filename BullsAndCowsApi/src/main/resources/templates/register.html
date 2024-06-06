@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/static/styles.css"/>
+    <style>
+        .authLabel {
+            width: 100%;
+            font-size: 18px;
+            display: block;
+            margin: 5px 0px;
+        }
+
+        .input {
+            width: 100%;
+            font-size: 14px;
+            margin: 5px 0px;
+        }
+
+        .btn-submit {
+            margin: 15px auto;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <form style="margin: 10% auto; display: block; width: 40%;" method="post" action="http://localhost:8080/register">
+        <div>
+            <label class="authLabel" for="login">Логин</label>
+            <input class="input" type="text" id="login">
+        </div>
+        <div>
+            <label class="authLabel" for="password">Пароль</label>
+            <input class="input" type="password" id="password">
+        </div>
+        <div style="margin: 0 auto; width: 50%;">
+            <input class="btn-submit" type="submit">
+        </div>
+    </form>
+</body>
+</html>

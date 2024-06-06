@@ -1,0 +1,17 @@
+.authLabel {
+    width: 100%;
+    font-size: 18px;
+    display: block;
+    margin: 5px 0px;
+}
+
+.input {
+    width: 100%;
+    font-size: 14px;
+    margin: 5px 0px;
+}
+
+.btn-submit {
+    margin: 15px auto;
+    width: 100%;
+}
