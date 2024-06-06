@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <title>Логин</title>
-    <link rel="stylesheet" href="/static/styles.css"/>
     <style>
         .authLabel {
             width: 100%;
@@ -26,19 +25,32 @@
     </style>
 </head>
 <body>
-
-<form style="margin: 10% auto; display: block; width: 40%;" method="post" action="http://localhost:8080/login">
-    <div>
-        <label class="authLabel" for="login">Логин</label>
-        <input class="input" type="text" id="login">
+    <div style="margin: 10% auto; display: block; width: 40%;">
+        <div>
+            <label class="authLabel" for="login">Логин</label>
+            <input class="input" type="text" id="login">
+        </div>
+        <div>
+            <label class="authLabel" for="password">Пароль</label>
+            <input class="input" type="password" id="password">
+        </div>
+        <div style="margin: 0 auto; width: 50%;">
+            <button onclick="reg()" class="btn-submit">Войти</button>
+        </div>
     </div>
-    <div>
-        <label class="authLabel" for="password">Пароль</label>
-        <input class="input" type="password" id="password">
-    </div>
-    <div style="margin: 0 auto; width: 50%;">
-        <input class="btn-submit" type="submit">
-    </div>
-</form>
+    <script>
+        function reg(){
+            const log = document.getElementById("login").value;
+            const pass = document.getElementById("password").value;
+            let data = {login: log, password: pass};
+            fetch("http://localhost:8080/login", {
+              method: "POST",
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(data)
+            }).then(res => {
+              console.log("Request complete! response:", res);
+            });
+        }
+    </script>
 </body>
 </html>
