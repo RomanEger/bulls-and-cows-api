@@ -18,4 +18,6 @@ public class Game {
     public String rule;
 
     public UUID session;
+
+    public UUID userSession;
 }

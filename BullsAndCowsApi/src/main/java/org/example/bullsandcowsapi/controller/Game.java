@@ -1,18 +1,22 @@
 package org.example.bullsandcowsapi.controller;
 
-import org.example.bullsandcowsapi.Attempt;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.bullsandcowsapi.dto.AttemptDto;
+import org.example.bullsandcowsapi.entity.User;
 import org.example.bullsandcowsapi.reponse.AttemptResponse;
 import org.example.bullsandcowsapi.reponse.GameResponse;
 import org.example.bullsandcowsapi.reponse.BaseResponse;
 import org.example.bullsandcowsapi.reponse.GameStatusReponse;
 import org.example.bullsandcowsapi.repository.GameCrudRepository;
+import org.example.bullsandcowsapi.repository.UserCrudRepository;
 import org.example.bullsandcowsapi.request.CreateGameRequestDto;
 import org.example.bullsandcowsapi.service.IntToIntArrayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,22 +24,40 @@ import java.util.UUID;
 @RequestMapping("/game")
 public class Game {
 
-    private final GameCrudRepository repository;
-
+    private final GameCrudRepository gameRepository;
+    private final UserCrudRepository userRepository;
     @Autowired
-    public Game(GameCrudRepository repository){
-        this.repository = repository;
+    public Game(GameCrudRepository repository, UserCrudRepository userRepository){
+        this.gameRepository = repository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/create")
-    public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
+    public BaseResponse Create(HttpServletResponse response, @RequestBody CreateGameRequestDto createGameRequestDto){
+        User user = null;
+        try{
+            user = userRepository.findById(createGameRequestDto.session);
+        }
+        catch (Exception ex){
+            //
+        }
+        if(user == null)
+            return new BaseResponse("FAIL", "Пользователь не найден");
+
         var game = new org.example.bullsandcowsapi.entity.Game();
         game.number = createGameRequestDto.number;
         game.rule = createGameRequestDto.gameRules;
         game.session = UUID.randomUUID();
+        game.userSession = createGameRequestDto.session;
         try{
-            repository.create(game);
-            var result = repository.findById(game.session);
+            gameRepository.create(game);
+            var result = gameRepository.findById(game.session);
+
+            var cookie = new Cookie("userId", game.userSession.toString());
+            cookie.setPath("/");
+            cookie.setMaxAge(3600);
+            response.addCookie(cookie);
+            response.setContentType("text/plain");
 
             return new GameResponse("OK", null, result.session);
         }
@@ -47,7 +69,7 @@ public class Game {
     @GetMapping("/{id}/status")
     public BaseResponse Status(@PathVariable UUID id){
         try {
-            List<AttemptDto> attempts = repository.findAttemptsByGameId(id);
+            List<AttemptDto> attempts = gameRepository.findAttemptsByGameId(id);
             return new GameStatusReponse("IN_PROGRESS", null, attempts);
         }
         catch (Exception ex){
@@ -56,24 +78,30 @@ public class Game {
     }
 
     @PostMapping("/{id}/attempt")
-    public BaseResponse Attempt(@PathVariable UUID id, @RequestBody int number){
+    public BaseResponse Attempt(HttpServletRequest request, @PathVariable UUID id, @RequestBody int number){
         try{
             var attempt = new org.example.bullsandcowsapi.entity.Attempt();
             var game = new org.example.Game();
             var arrAttempt = IntToIntArrayService.toIntArray(number);
-            var arrBulls = IntToIntArrayService.toIntArray(repository.findById(id).number);
+            var arrBulls = IntToIntArrayService.toIntArray(gameRepository.findById(id).number);
             var tuple = game.getBullsAndCows(arrBulls, arrAttempt);
-            var gameObj = repository.findById(id);
+            var gameObj = gameRepository.findById(id);
+            var cookie = WebUtils.getCookie(request, "userId");
+            var userId = cookie.getValue();
+            if (userId.equals(gameObj.userSession.toString())){
+                return new BaseResponse("FAIL", "Попытка записать попытку в свою игру");
+            }
+
             attempt.number = number;
             attempt.bulls = tuple.getFirst();
             attempt.cows = tuple.getSecond();
             attempt.gameId = gameObj.id;
 
-            repository.addAttempt(attempt);
+            gameRepository.addAttempt(attempt);
             return new AttemptResponse("OK", null, tuple.getFirst(), tuple.getSecond());
         }
         catch (Exception ex){
-            return new BaseResponse("FAIL", ex.getMessage());
+            return new BaseResponse("FAIL", "Игра не найдена");
         }
     }
 }

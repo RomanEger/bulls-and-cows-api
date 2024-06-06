@@ -64,9 +64,9 @@ public class UserRepository implements UserCrudRepository {
 
     @Override
     public User findById(UUID uuid) {
-        var query =  em.createQuery("select u from users u where id=?1", User.class);
+        var query =  em.createNativeQuery("select * from users u where id=?1", User.class);
         query.setParameter(1, uuid);
-        return query.getSingleResult();
+        return (User)query.getSingleResult();
     }
 
     @Override

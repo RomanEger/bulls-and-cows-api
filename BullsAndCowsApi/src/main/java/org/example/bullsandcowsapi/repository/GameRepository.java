@@ -31,9 +31,8 @@ public class GameRepository implements GameCrudRepository {
     public UUID create(Game game) {
         em.merge(game);
         var sql = "select top 1 session from games order by id desc";
-        var nativeQuery = em.createNativeQuery(sql);
-        var a = (byte[]) nativeQuery.getSingleResult();
-        var uuid = asUuid(a);
+        var nativeQuery = em.createNativeQuery(sql, UUID.class);
+        var uuid = (UUID) nativeQuery.getSingleResult();
         return uuid;
     }
 
@@ -53,22 +52,18 @@ public class GameRepository implements GameCrudRepository {
 
     @Override
     public Game findById(UUID id) {
-        var sqlAll = "select * from games";
-        var queryAll = em.createNativeQuery(sqlAll, GameDto.class);
-        var list = queryAll.getResultList();
-        var dto = (GameDto)list.get(0);
-
-        var uuid = asUuid(dto.session());
-//        var sql = "select * from games g where g.id = ?1";
-//        var query = em.createNativeQuery(sql);
-//        query.setParameter(1, id);
-//        var obj = query.getSingleResult();
-//        var dto = (GameDto) obj;
+        var sql = "select * from games where session=?";
+        var query = em.createNativeQuery(sql, GameDto.class);
+        query.setParameter(1, id);
+        var dto = (GameDto) query.getSingleResult();
+        var session = asUuid(dto.session());
+        var userSession = asUuid(dto.userSession());
         var game = new Game();
         game.id = dto.id();
-        game.session = uuid;
+        game.session = session;
         game.number = dto.number();
         game.rule = dto.rule();
+        game.userSession = userSession;
         return game;
     }
 
