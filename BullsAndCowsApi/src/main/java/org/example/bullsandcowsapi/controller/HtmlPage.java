@@ -22,4 +22,9 @@ public class HtmlPage {
     public String createGame(){
         return "create";
     }
+
+    @GetMapping("/games")
+    public String games(){
+        return "games";
+    }
 }
