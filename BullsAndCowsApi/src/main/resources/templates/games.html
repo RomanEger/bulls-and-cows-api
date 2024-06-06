@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Все игры</title>
+    <style>
+        button {
+            margin: 0px 5px
+        }
+    </style>
 </head>
-<body>
+<body style="margin: 0">
+    <header style="border-bottom: 1px solid; padding: 10px;">
+        <button onclick="createNewGame()">Создать игру</button>
+    </header>
+    <div>
 
+    </div>
+    <script>
+        function createNewGame(){
+            fetch("http://localhost:8080/game/create", {
+              method: "GET",
+              headers: {'Content-Type': 'application/json'}
+            })
+        }
+    </script>
 </body>
 </html>
