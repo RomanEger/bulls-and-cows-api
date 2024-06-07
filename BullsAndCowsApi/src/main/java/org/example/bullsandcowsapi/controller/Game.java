@@ -37,10 +37,11 @@ public class Game {
     @PostMapping("/create")
     public BaseResponse Create(HttpServletRequest request, @RequestBody CreateGameRequestDto createGameRequestDto){
         User user = null;
+        UUID userId = null;
         try{
             var cookie = WebUtils.getCookie(request, "userId");
-            var userId = cookie.getValue();
-            user = userRepository.findById(UUID.fromString(userId));
+            userId = UUID.fromString(cookie.getValue());
+            user = userRepository.findById(userId);
         }
         catch (Exception ex){
             //
@@ -52,7 +53,7 @@ public class Game {
         game.number = createGameRequestDto.number;
         game.rule = createGameRequestDto.gameRules;
         game.session = UUID.randomUUID();
-        game.userSession = createGameRequestDto.session;
+        game.userSession = userId;
         try{
             gameRepository.create(game);
             var result = gameRepository.findById(game.session);
