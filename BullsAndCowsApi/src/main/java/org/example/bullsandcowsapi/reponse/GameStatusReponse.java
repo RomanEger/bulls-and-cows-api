@@ -1,8 +1,6 @@
 package org.example.bullsandcowsapi.reponse;
 
-import org.example.bullsandcowsapi.Attempt;
 import org.example.bullsandcowsapi.dto.AttemptDto;
-
 import java.util.List;
 
 public class GameStatusReponse extends BaseResponse {

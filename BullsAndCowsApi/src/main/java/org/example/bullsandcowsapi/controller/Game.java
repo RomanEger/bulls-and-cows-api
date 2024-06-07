@@ -1,8 +1,6 @@
 package org.example.bullsandcowsapi.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.example.bullsandcowsapi.dto.AttemptDto;
 import org.example.bullsandcowsapi.entity.User;
 import org.example.bullsandcowsapi.reponse.AttemptResponse;
@@ -14,7 +12,6 @@ import org.example.bullsandcowsapi.repository.UserCrudRepository;
 import org.example.bullsandcowsapi.request.CreateGameRequestDto;
 import org.example.bullsandcowsapi.service.IntToIntArrayService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;

@@ -7,8 +7,6 @@ import org.example.bullsandcowsapi.dto.AttemptDto;
 import org.example.bullsandcowsapi.dto.GameDto;
 import org.example.bullsandcowsapi.entity.Attempt;
 import org.example.bullsandcowsapi.entity.Game;
-import org.example.bullsandcowsapi.entity.User;
-import org.example.bullsandcowsapi.reponse.GameStatusReponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

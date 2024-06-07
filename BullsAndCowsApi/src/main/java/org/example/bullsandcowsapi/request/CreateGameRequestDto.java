@@ -1,7 +1,5 @@
 package org.example.bullsandcowsapi.request;
 
-import java.util.UUID;
-
 public class CreateGameRequestDto extends BaseGameRequestDto {
     public String gameRules;
 

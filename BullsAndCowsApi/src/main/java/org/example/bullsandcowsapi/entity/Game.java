@@ -1,9 +1,6 @@
 package org.example.bullsandcowsapi.entity;
 
 import jakarta.persistence.*;
-import org.aspectj.lang.annotation.RequiredTypes;
-
-import java.util.List;
 import java.util.UUID;
 
 @Entity
