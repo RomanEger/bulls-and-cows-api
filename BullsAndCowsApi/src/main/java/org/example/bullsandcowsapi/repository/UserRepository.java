@@ -43,7 +43,7 @@ public class UserRepository implements UserCrudRepository {
 
     @Override
     public User findByLogin(String login) {
-        var typedQuery = em.createQuery("select u from user u where u.login = ?1", User.class);
+        var typedQuery = em.createQuery("select u from users u where u.login = ?1", User.class);
         typedQuery.setParameter(1, login);
         return typedQuery.getSingleResult();
     }

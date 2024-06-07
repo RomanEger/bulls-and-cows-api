@@ -26,15 +26,31 @@
     <div style="margin: 10% auto; display: block; width: 40%;">
         <div>
             <label for="number">Введите число:</label>
-            <input class="input" type="text" id="number" />
+            <input class="input" type="number" id="number" />
         </div>
         <div style="margin: 0 auto; width: 50%;">
             <button class="btn-submit" onclick="saveNumber()">Сохранить</button>
         </div>
     </div>
 <script>
-    function saveNumber(){
-
+    async function saveNumber(){
+        const num = document.getElementById("number").value;
+        const data = {number: num,rules: "classic", };
+        let response;
+        await fetch("http://localhost:8080/game/create", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(jsonRes => response = jsonRes);
+        console.log(response);
+        if(response.status == "OK"){
+            alert("Игра успешно создана! Сессия: " + response.gameSession);
+        }
+        else {
+            alert("Не удалось создать игру. " + response.errorMessage);
+        }
     }
 </script>
 </body>
