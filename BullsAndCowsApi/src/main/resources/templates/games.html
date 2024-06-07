@@ -5,15 +5,16 @@
     <title>Все игры</title>
     <style>
         button {
-            margin: 0px 5px
+            margin: 5px;
+            width: 30%;
         }
     </style>
 </head>
 <body style="margin: 0">
-    <div style="border-bottom: 1px solid; padding: 10px;">
+    <header style="border-bottom: 1px solid; padding: 10px; text-align: end">
         <button id="btn">Создать игру</button>
-    </div>
-    <div id="games">
+    </header>
+    <div id="games" style="text-align: center">
 
     </div>
     <script>
@@ -28,6 +29,12 @@
 
         const set = new Set();
 
+        function clickPlay(){
+            const data = this.innerText;
+            console.log(data);
+<!--            переход на страницу этой игры-->
+        }
+
         async function getGames(){
             const result = await fetch("http://localhost:8080/game/all", {
                 method: "GET"
@@ -36,15 +43,19 @@
             .then(data => {
                 set.add(data);
             })
+            let i = 0;
             for(const items of set){
                 for(const item of items){
                     console.log(item);
-                    var node = document.getElementById('games');
-                    var newNode = document.createElement('p');
-                    const itemId = item.id;
+                    var n = document.getElementById('games');
+                    var node = document.createElement('div');
+                    var newNode = document.createElement('button');
                     const itemSession = item.session;
-                    newNode.appendChild(document.createTextNode(itemId + " " + itemSession));
+                    newNode.appendChild(document.createTextNode(itemSession));
+                    newNode.setAttribute("onclick", "clickPlay.apply(this)");
                     node.appendChild(newNode);
+                    n.appendChild(node);
+                    i++;
                 }
             }
         }
