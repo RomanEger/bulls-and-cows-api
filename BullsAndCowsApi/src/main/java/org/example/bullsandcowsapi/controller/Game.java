@@ -35,10 +35,12 @@ public class Game {
     }
 
     @PostMapping("/create")
-    public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
+    public BaseResponse Create(HttpServletRequest request, @RequestBody CreateGameRequestDto createGameRequestDto){
         User user = null;
         try{
-            user = userRepository.findById(createGameRequestDto.session);
+            var cookie = WebUtils.getCookie(request, "userId");
+            var userId = cookie.getValue();
+            user = userRepository.findById(UUID.fromString(userId));
         }
         catch (Exception ex){
             //

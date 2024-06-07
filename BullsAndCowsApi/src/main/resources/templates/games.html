@@ -13,7 +13,7 @@
     <div style="border-bottom: 1px solid; padding: 10px;">
         <button id="btn">Создать игру</button>
     </div>
-    <div>
+    <div id="games">
 
     </div>
     <script>
@@ -26,15 +26,29 @@
         }
         document.getElementById("btn").addEventListener("click", newGame);
 
+        const set = new Set();
+
         async function getGames(){
             const result = await fetch("http://localhost:8080/game/all", {
                 method: "GET"
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
+                set.add(data);
             })
+            for(const items of set){
+                for(const item of items){
+                    console.log(item);
+                    var node = document.getElementById('games');
+                    var newNode = document.createElement('p');
+                    const itemId = item.id;
+                    const itemSession = item.session;
+                    newNode.appendChild(document.createTextNode(itemId + " " + itemSession));
+                    node.appendChild(newNode);
+                }
+            }
         }
+        window.onload = getGames();
     </script>
 </body>
 </html>
