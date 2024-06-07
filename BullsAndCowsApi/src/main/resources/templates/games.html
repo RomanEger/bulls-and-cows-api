@@ -11,55 +11,54 @@
     </style>
 </head>
 <body style="margin: 0">
-    <header style="border-bottom: 1px solid; padding: 10px; text-align: end">
-        <button id="btn">Создать игру</button>
-    </header>
-    <div id="games" style="text-align: center">
+<header style="border-bottom: 1px solid; padding: 10px; text-align: end">
+    <button id="btn">Создать игру</button>
+</header>
+<div id="games" style="text-align: center; margin-top: 10%;">
 
-    </div>
-    <script>
-        function newGame(){
-            fetch("http://localhost:8080/game/create", {
-              method: "GET"
-            }).then(res => {
-              window.location.replace('http://localhost:8080/game/create');
-            });
-        }
-        document.getElementById("btn").addEventListener("click", newGame);
+</div>
+<script>
+    function newGame(){
+        fetch("http://localhost:8080/game/create", {
+          method: "GET"
+        }).then(res => {
+          window.location.replace('http://localhost:8080/game/create');
+        });
+    }
+    document.getElementById("btn").addEventListener("click", newGame);
 
-        const set = new Set();
+    var set;
 
-        function clickPlay(){
-            const data = this.innerText;
-            console.log(data);
+    function clickPlay(){
+        const data = this.innerText;
+        console.log(data);
 <!--            переход на страницу этой игры-->
-        }
+    }
 
-        async function getGames(){
-            const result = await fetch("http://localhost:8080/game/all", {
-                method: "GET"
-            })
-            .then(response => response.json())
-            .then(data => {
-                set.add(data);
-            })
-            let i = 0;
-            for(const items of set){
-                for(const item of items){
-                    console.log(item);
-                    var n = document.getElementById('games');
-                    var node = document.createElement('div');
-                    var newNode = document.createElement('button');
-                    const itemSession = item.session;
-                    newNode.appendChild(document.createTextNode(itemSession));
-                    newNode.setAttribute("onclick", "clickPlay.apply(this)");
-                    node.appendChild(newNode);
-                    n.appendChild(node);
-                    i++;
-                }
-            }
+    async function getGames(){
+        const result = await fetch("http://localhost:8080/game/all", {
+            method: "GET"
+        })
+        .then(response => response.json())
+        .then(data => {
+            set=data;
+        })
+        let i = 0;
+        for(const item of set){
+             console.log(item);
+                var n = document.getElementById('games');
+                var node = document.createElement('div');
+                var newNode = document.createElement('button');
+                const itemSession = item.session;
+                newNode.appendChild(document.createTextNode(itemSession));
+                newNode.setAttribute("onclick", "clickPlay.apply(this)");
+                node.appendChild(newNode);
+                n.appendChild(node);
+                i++;
+
         }
-        window.onload = getGames();
-    </script>
+    }
+    window.onload = getGames();
+</script>
 </body>
 </html>
