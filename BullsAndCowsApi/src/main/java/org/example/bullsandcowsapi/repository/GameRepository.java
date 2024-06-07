@@ -51,6 +51,14 @@ public class GameRepository implements GameCrudRepository {
     }
 
     @Override
+    public List<GameDto> findAll(){
+        var sql = "select * from games";
+        var query = em.createNativeQuery(sql, GameDto.class);
+        var list = (List<GameDto>) query.getResultList();
+        return list;
+    }
+
+    @Override
     public Game findById(UUID id) {
         var sql = "select * from games where session=?";
         var query = em.createNativeQuery(sql, GameDto.class);

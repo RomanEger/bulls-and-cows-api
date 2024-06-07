@@ -1,6 +1,7 @@
 package org.example.bullsandcowsapi.repository;
 
 import org.example.bullsandcowsapi.dto.AttemptDto;
+import org.example.bullsandcowsapi.dto.GameDto;
 import org.example.bullsandcowsapi.entity.Attempt;
 import org.example.bullsandcowsapi.entity.Game;
 
@@ -9,6 +10,8 @@ import java.util.UUID;
 
 public interface GameCrudRepository {
     UUID create(Game game);
+
+    List<GameDto> findAll();
 
     Game findById(UUID id);
 

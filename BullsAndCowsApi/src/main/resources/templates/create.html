@@ -3,8 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Создать игру</title>
+    <style>
+        label {
+            width: 100%;
+            font-size: 18px;
+            display: block;
+            margin: 5px 0px;
+        }
+        .input {
+            width: 100%;
+            font-size: 14px;
+            margin: 5px 0px;
+        }
+        .btn-submit {
+            margin: 15px auto;
+            width: 100%;
+        }
+
+    </style>
 </head>
 <body>
+    <div style="margin: 10% auto; display: block; width: 40%;">
+        <div>
+            <label for="number">Введите число:</label>
+            <input class="input" type="text" id="number" />
+        </div>
+        <div style="margin: 0 auto; width: 50%;">
+            <button class="btn-submit" onclick="saveNumber()">Сохранить</button>
+        </div>
+    </div>
+<script>
+    function saveNumber(){
 
+    }
+</script>
 </body>
 </html>

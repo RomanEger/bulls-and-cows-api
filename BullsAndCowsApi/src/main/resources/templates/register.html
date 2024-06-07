@@ -36,6 +36,9 @@
         <div style="margin: 0 auto; width: 50%;">
             <button onclick="reg()" class="btn-submit">Зарегистрироваться</button>
         </div>
+        <div style="margin: 0 auto; width: 50%;">
+            <button onclick="log()" class="btn-submit">Есть аккаунт</button>
+        </div>
     </div>
     <script>
         function reg(){
@@ -57,6 +60,14 @@
               }).then(x => {
                 window.location.replace('http://localhost:8080/games');
               });
+            });
+        }
+
+        function log(){
+            fetch("http://localhost:8080/login", {
+            method: "GET"
+            }).then(x => {
+                window.location.replace('http://localhost:8080/login');
             });
         }
     </script>

@@ -14,6 +14,8 @@ import org.example.bullsandcowsapi.repository.UserCrudRepository;
 import org.example.bullsandcowsapi.request.CreateGameRequestDto;
 import org.example.bullsandcowsapi.service.IntToIntArrayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 
@@ -33,7 +35,7 @@ public class Game {
     }
 
     @PostMapping("/create")
-    public BaseResponse Create(HttpServletResponse response, @RequestBody CreateGameRequestDto createGameRequestDto){
+    public BaseResponse Create(@RequestBody CreateGameRequestDto createGameRequestDto){
         User user = null;
         try{
             user = userRepository.findById(createGameRequestDto.session);
@@ -97,5 +99,18 @@ public class Game {
         catch (Exception ex){
             return new BaseResponse("FAIL", "Игра не найдена");
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity getAll(HttpServletRequest request){
+        var cookie = WebUtils.getCookie(request, "userId");
+        try{
+            var userId = cookie.getValue();
+        }
+        catch(Exception ex){
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        var games = gameRepository.findAll();
+        return ResponseEntity.ok(games);
     }
 }

@@ -35,11 +35,14 @@
             <input class="input" type="password" id="password">
         </div>
         <div style="margin: 0 auto; width: 50%;">
-            <button onclick="reg()" class="btn-submit">Войти</button>
+            <button onclick="log()" class="btn-submit">Войти</button>
+        </div>
+        <div style="margin: 0 auto; width: 50%;">
+            <button onclick="reg()" class="btn-submit">Зарегистрироваться</button>
         </div>
     </div>
     <script>
-        function reg(){
+        function log(){
             const log = document.getElementById("login").value;
             const pass = document.getElementById("password").value;
             let data = {login: log, password: pass};
@@ -49,6 +52,14 @@
               body: JSON.stringify(data)
             }).then(res => {
               window.location.replace('http://localhost:8080/games');
+            });
+        }
+
+        function reg(){
+            fetch("http://localhost:8080/register", {
+            method: "GET"
+            }).then(x => {
+                window.location.replace('http://localhost:8080/register');
             });
         }
     </script>
