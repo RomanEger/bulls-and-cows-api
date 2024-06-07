@@ -31,6 +31,10 @@ public class Authorization {
         user.login = requestUser.login();
         user.password = requestUser.password();
         try{
+            var u = repository.findByLogin(user.login);
+            if(u != null){
+                return new BaseResponse("FAIL", "Логин занят!");
+            }
             repository.create(user);
             return new BaseResponse("OK", null);
         }

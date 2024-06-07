@@ -27,8 +27,6 @@
     }
     document.getElementById("btn").addEventListener("click", newGame);
 
-    var set;
-
     function clickPlay(){
         const data = this.innerText;
         console.log(data);
@@ -36,6 +34,7 @@
     }
 
     async function getGames(){
+        var set;
         const result = await fetch("http://localhost:8080/game/all", {
             method: "GET"
         })
@@ -55,7 +54,6 @@
                 node.appendChild(newNode);
                 n.appendChild(node);
                 i++;
-
         }
     }
     window.onload = getGames();
