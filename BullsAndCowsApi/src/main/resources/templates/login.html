@@ -50,8 +50,13 @@
               method: "POST",
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(data)
-            }).then(res => {
-              window.location.replace('http://localhost:8080/games');
+            }).then(x => {
+              if(x.status == "OK"){
+                    window.location.replace('http://localhost:8080/games');
+                }
+                else {
+                    alert(x.errorMessage);
+                }
             });
         }
 

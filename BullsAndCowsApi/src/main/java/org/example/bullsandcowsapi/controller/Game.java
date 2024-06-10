@@ -33,6 +33,11 @@ public class Game {
 
     @PostMapping("/create")
     public BaseResponse Create(HttpServletRequest request, @RequestBody CreateGameRequestDto createGameRequestDto){
+        var arr = IntToIntArrayService.toIntArray(createGameRequestDto.number);
+
+        if(arr.length<2)
+            return new BaseResponse("FAIL", "Число должно содержать больше 2 символов");
+
         User user = null;
         UUID userId = null;
         try{

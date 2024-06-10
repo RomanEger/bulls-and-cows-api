@@ -27,6 +27,8 @@ public class Authorization {
 
     @PostMapping("/register")
     public BaseResponse Registration(@RequestBody AuthorizationRequestDto requestUser){
+        if(requestUser.login().isBlank() || requestUser.password().isBlank())
+            return new BaseResponse("FAIL", "Некорректный логин или пароль");
         var user = new User();
         user.login = requestUser.login();
         user.password = requestUser.password();
@@ -53,6 +55,9 @@ public class Authorization {
 
     @PostMapping("/login")
     public BaseResponse Login(HttpServletResponse response, @RequestBody AuthorizationRequestDto user){
+        if(user.login().isBlank() || user.password().isBlank())
+            return new BaseResponse("FAIL", "Некорректный логин или пароль");
+
         try{
             var findUser = repository.findByLoginAndPassword(user.login(), user.password());
 

@@ -46,21 +46,28 @@
             const pass = document.getElementById("password").value;
             let data = {login: log, password: pass};
             let jsonData = JSON.stringify(data);
-            fetch("http://localhost:8080/register", {
+            var x = fetch("http://localhost:8080/register", {
               method: "POST",
               headers: {'Content-Type': 'application/json'},
               body: jsonData
-            }).then(res => {
-              console.log("Request complete! response:", res);
-
-              fetch("http://localhost:8080/login", {
-              method: "POST",
-              headers: {'Content-Type': 'application/json'},
-              body: jsonData
-              }).then(x => {
-                window.location.replace('http://localhost:8080/games');
-              });
             });
+
+            if(x.status == 200){
+                console.log("Request complete! response:", res);
+
+                var y = fetch("http://localhost:8080/login", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: jsonData
+                })
+                if(y.status == 200){
+                    window.location.replace('http://localhost:8080/games');
+                }
+            }
+            else {
+                alert("Не удалось войти");
+                return;
+            }
         }
 
         function log(){
