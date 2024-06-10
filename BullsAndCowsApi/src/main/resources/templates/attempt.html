@@ -34,14 +34,17 @@
 </div>
 <script>
     async function saveNumber(){
-        const num = document.getElementById("number").value;
-        const data = {number: num};
+        const number = document.getElementById("number").value;
         let response;
 
-        await fetch(window.location.href, {
+        var url = window.location.href;
+        var arr = url.split('/');
+        const id = arr[arr.length-2];
+        const httpAddress = `http://localhost:8080/game/${id}/attempt`;
+        await fetch(httpAddress, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            body: number
         })
         .then(res => res.json())
         .then(jsonRes => response = jsonRes);
@@ -63,6 +66,8 @@
             alert("Не удалось записать попытку. " + response.errorMessage);
         }
     }
+
+
 </script>
 </body>
 </html>

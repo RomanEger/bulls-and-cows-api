@@ -55,7 +55,7 @@ public class Game {
             gameRepository.create(game);
             var result = gameRepository.findById(game.session);
 
-            return new GameResponse("OK", null, result.session);
+            return new GameResponse("OK", null, game.session);
         }
         catch (Exception ex){
             return new BaseResponse("FAIL", ex.getMessage());
@@ -73,15 +73,16 @@ public class Game {
         }
     }
 
+
     @PostMapping("/{id}/attempt")
-    public BaseResponse Attempt(HttpServletRequest request, @PathVariable UUID id, @RequestBody int number){
+    public BaseResponse Attempt(HttpServletRequest request, @PathVariable String id, @RequestBody int number){
         try{
             var attempt = new org.example.bullsandcowsapi.entity.Attempt();
             var game = new org.example.Game();
             var arrAttempt = IntToIntArrayService.toIntArray(number);
-            var arrBulls = IntToIntArrayService.toIntArray(gameRepository.findById(id).number);
+            var arrBulls = IntToIntArrayService.toIntArray(gameRepository.findById(UUID.fromString(id)).number);
             var tuple = game.getBullsAndCows(arrBulls, arrAttempt);
-            var gameObj = gameRepository.findById(id);
+            var gameObj = gameRepository.findById(UUID.fromString(id));
             var cookie = WebUtils.getCookie(request, "userId");
             var userId = cookie.getValue();
             if (userId.equals(gameObj.userSession.toString())){

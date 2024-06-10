@@ -49,11 +49,21 @@ public class GameRepository implements GameCrudRepository {
     }
 
     @Override
-    public List<GameDto> findAll(){
+    public List<Game> findAll(){
         var sql = "select * from games";
         var query = em.createNativeQuery(sql, GameDto.class);
         var list = (List<GameDto>) query.getResultList();
-        return list;
+        var resultList = new ArrayList<Game>();
+        for(var item : list){
+            var game = new Game();
+            game.session = asUuid(item.session());
+            game.rule = item.rule();
+            game.id = item.id();
+            game.number = item.number();
+            game.userSession = asUuid(item.userSession());
+            resultList.add(game);
+        }
+        return resultList;
     }
 
     @Override

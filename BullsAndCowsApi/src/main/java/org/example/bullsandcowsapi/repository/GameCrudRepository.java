@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface GameCrudRepository {
     UUID create(Game game);
 
-    List<GameDto> findAll();
+    List<Game> findAll();
 
     Game findById(UUID id);
 
