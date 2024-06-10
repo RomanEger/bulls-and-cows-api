@@ -87,4 +87,12 @@ public class GameRepository implements GameCrudRepository {
     public void addAttempt(Attempt attempt) {
         em.merge(attempt);
     }
+
+    @Override
+    public void delete(int id){
+        var sql = "delete * from games where games.id=?";
+        var query = em.createNativeQuery(sql);
+        query.setParameter(1, id);
+        query.executeUpdate();
+    }
 }

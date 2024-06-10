@@ -17,6 +17,7 @@
 <div id="games" style="text-align: center; margin-top: 10%;">
 
 </div>
+
 <script>
     function newGame(){
         fetch("http://localhost:8080/game/create", {
@@ -30,7 +31,14 @@
     function clickPlay(){
         const data = this.innerText;
         console.log(data);
-<!--            переход на страницу этой игры-->
+
+        const httpAddress = `http://localhost:8080/${data}/attempt`;
+
+        const result = fetch(httpAddress, {
+            method: "GET"
+        }).then(res => {
+          window.location.replace(httpAddress);
+        });
     }
 
     async function getGames(){

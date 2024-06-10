@@ -18,4 +18,6 @@ public interface GameCrudRepository {
     List<AttemptDto> findAttemptsByGameId(UUID id);
 
     void addAttempt(Attempt attempt);
+
+    void delete(int id);
 }

@@ -94,6 +94,12 @@ public class Game {
             attempt.gameId = gameObj.id;
 
             gameRepository.addAttempt(attempt);
+
+            if(tuple.getFirst() == arrBulls.length){
+                gameRepository.delete(gameObj.id);
+                return new AttemptResponse("WIN", null, tuple.getFirst(), tuple.getSecond());
+            }
+
             return new AttemptResponse("OK", null, tuple.getFirst(), tuple.getSecond());
         }
         catch (Exception ex){

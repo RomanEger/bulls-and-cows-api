@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Попытка</title>
+    <style>
+        label {
+            width: 100%;
+            font-size: 18px;
+            display: block;
+            margin: 5px 0px;
+        }
+        .input {
+            width: 100%;
+            font-size: 14px;
+            margin: 5px 0px;
+        }
+        .btn-submit {
+            margin: 15px auto;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+<div style="margin: 10% auto; display: block; width: 40%;">
+    <div>
+        <label for="number">Введите число:</label>
+        <input class="input" type="number" id="number" />
+    </div>
+    <div style="margin: 0 auto; width: 50%;">
+        <button class="btn-submit" onclick="saveNumber()">Сохранить</button>
+    </div>
+</div>
+<script>
+    async function saveNumber(){
+        const num = document.getElementById("number").value;
+        const data = {number: num};
+        let response;
+
+        await fetch(window.location.href, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(jsonRes => response = jsonRes);
+        console.log(response);
+
+        if(response.status == "WIN"){
+            alert(`Вы победили! Быков: ${response.bulls}\tКоров: ${response.cows}`);
+            fetch("http://localhost:8080/games", {
+                method: "GET"
+            })
+            .then(x => {
+                window.location.replace('http://localhost:8080/games');
+            });
+        }
+        else if(response.status == "OK"){
+            alert(`Попытка сохранена. Быков: ${response.bulls}\tКоров: ${response.cows}`);
+        }
+        else {
+            alert("Не удалось записать попытку. " + response.errorMessage);
+        }
+    }
+</script>
+</body>
+</html>

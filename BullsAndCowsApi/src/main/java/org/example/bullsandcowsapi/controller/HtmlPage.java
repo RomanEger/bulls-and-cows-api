@@ -43,4 +43,16 @@ public class HtmlPage {
         }
         return "games";
     }
+
+    @GetMapping("/{id}/attempt")
+    public String attempt(HttpServletRequest request){
+        var cookie = WebUtils.getCookie(request, "userId");
+        try{
+            var userId = cookie.getValue();
+        }
+        catch (Exception e){
+            return "login";
+        }
+        return "attempt";
+    }
 }
